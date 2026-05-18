@@ -37,3 +37,6 @@ targets:
       path: MacRef/MacRef.entitlements
       properties:
         com.apple.security.app-sandbox: false
+    scheme:
+      environmentVariables:
+        OS_ACTIVITY_MODE: disable
