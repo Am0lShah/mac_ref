@@ -21,7 +21,13 @@ jobs:
       # ── 2. Setup Xcode 16 and Install xcodegen ──────────────────────────
       - name: Setup Environment
         run: |
-          sudo xcode-select -s /Applications/Xcode_16.0.app/Contents/Developer || sudo xcode-select -s /Applications/Xcode_16.1.app/Contents/Developer
+          XCODE_APP=$(ls -d /Applications/Xcode_16*.app | sort -V | tail -n 1)
+          if [ -n "$XCODE_APP" ]; then
+            sudo xcode-select -s "$XCODE_APP/Contents/Developer"
+            echo "Selected Xcode: $XCODE_APP"
+          else
+            echo "Xcode 16 not found, using default"
+          fi
           brew install xcodegen
 
       # ── 3. Generate Xcode project ─────────────────────────────────────
