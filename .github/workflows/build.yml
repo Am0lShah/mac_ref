@@ -16,13 +16,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # ── 2. Install xcodegen (generates .xcodeproj from project.yml) ───
-      - name: Install xcodegen
-        run: brew install xcodegen
+      # ── 2. Check xcodegen ─────────────────────────────────────────────
+      - name: Check xcodegen
+        run: xcodegen --version
 
       # ── 3. Generate Xcode project ─────────────────────────────────────
       - name: Generate Xcode project
-        run: xcodegen generate --spec project.yml
+        run: |
+          xcodegen generate --spec project.yml
+          xcodebuild -list
 
       # ── 4. Build Release binary (no code signing) ─────────────────────
       - name: Build
@@ -30,11 +32,12 @@ jobs:
           xcodebuild clean build \
             -scheme MacRef \
             -configuration Release \
+            -destination 'platform=macOS,arch=arm64' \
             -derivedDataPath ./DerivedData \
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGN_IDENTITY="" \
-            ARCHS=arm64
+            ARCHS=arm64 || (echo "XCODEBUILD FAILED" && exit 1)
 
       # ── 5. Locate the built .app ──────────────────────────────────────
       - name: Locate .app
