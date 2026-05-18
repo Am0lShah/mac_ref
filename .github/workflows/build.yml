@@ -42,13 +42,17 @@ jobs:
           touch build_log.txt
           xcodebuild clean build \
             -project MacRef.xcodeproj \
+            -scheme MacRef \
             -configuration Release \
             -destination 'platform=macOS,arch=arm64' \
             -derivedDataPath ./DerivedData \
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
-            CODE_SIGN_IDENTITY="" \
-            ARCHS=arm64 >> build_log.txt 2>&1 || exit 1
+            ARCHS=arm64 >> build_log.txt 2>&1 || (cat build_log.txt && exit 1)
+
+      - name: Show Build Log on Failure
+        if: failure()
+        run: cat build_log.txt || true
 
       # ── 5. Locate the built .app ──────────────────────────────────────
       - name: Locate .app
