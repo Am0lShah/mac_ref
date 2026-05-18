@@ -3,7 +3,7 @@
 ⚙️  Writing project...
 Created project at /Users/runner/work/mac_ref/mac_ref/MacRef.xcodeproj
 Command line invocation:
-    /Applications/Xcode_16.1.app/Contents/Developer/usr/bin/xcodebuild -list
+    /Applications/Xcode_16.2.app/Contents/Developer/usr/bin/xcodebuild -list
 
 User defaults from command line:
     IDEPackageSupportUseBuiltinSCM = YES
@@ -21,5 +21,5 @@ Information about project "MacRef":
     Schemes:
         MacRef
 
-2026-05-18 12:55:57.433 xcodebuild[13806:39069] Writing error result bundle to /var/folders/k4/_09nqs851t35bpkk8lr_p43c0000gn/T/ResultBundle_2026-18-05_12-55-0057.xcresult
+2026-05-18 12:58:19.339 xcodebuild[1816:7860] Writing error result bundle to /var/folders/k4/_09nqs851t35bpkk8lr_p43c0000gn/T/ResultBundle_2026-18-05_12-58-0019.xcresult
 xcodebuild: error: The flag -scheme, -testProductsPath, or -xctestrun is required when specifying -derivedDataPath.
