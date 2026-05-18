@@ -10,6 +10,8 @@ jobs:
   build:
     name: Build & Package MacRef
     runs-on: macos-14        # Apple Silicon runner (M1) — free on GitHub
+    permissions:
+      contents: write
 
     steps:
       # ── 1. Checkout source ────────────────────────────────────────────
@@ -29,6 +31,7 @@ jobs:
       # ── 4. Build Release binary (no code signing) ─────────────────────
       - name: Build
         run: |
+          touch build_log.txt
           xcodebuild clean build \
             -project MacRef.xcodeproj \
             -scheme MacRef \
@@ -38,7 +41,7 @@ jobs:
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGN_IDENTITY="" \
-            ARCHS=arm64 > build_log.txt 2>&1 || (cat build_log.txt && exit 1)
+            ARCHS=arm64 > build_log.txt 2>&1 || exit 1
 
       # ── 5. Locate the built .app ──────────────────────────────────────
       - name: Locate .app
