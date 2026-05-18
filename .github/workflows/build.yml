@@ -18,9 +18,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # ── 2. Install xcodegen ─────────────────────────────────────────────
-      - name: Install xcodegen
-        run: brew install xcodegen
+      # ── 2. Setup Xcode 16 and Install xcodegen ──────────────────────────
+      - name: Setup Environment
+        run: |
+          sudo xcode-select -s /Applications/Xcode_16.0.app/Contents/Developer || sudo xcode-select -s /Applications/Xcode_16.1.app/Contents/Developer
+          brew install xcodegen
 
       # ── 3. Generate Xcode project ─────────────────────────────────────
       - name: Generate Xcode project
