@@ -25,8 +25,8 @@ jobs:
       # ── 3. Generate Xcode project ─────────────────────────────────────
       - name: Generate Xcode project
         run: |
-          xcodegen generate --spec project.yml
-          xcodebuild -list
+          xcodegen generate --spec project.yml > build_log.txt 2>&1 || (cat build_log.txt && exit 1)
+          xcodebuild -list >> build_log.txt 2>&1 || true
 
       # ── 4. Build Release binary (no code signing) ─────────────────────
       - name: Build
@@ -34,14 +34,13 @@ jobs:
           touch build_log.txt
           xcodebuild clean build \
             -project MacRef.xcodeproj \
-            -scheme MacRef \
             -configuration Release \
             -destination 'platform=macOS,arch=arm64' \
             -derivedDataPath ./DerivedData \
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGN_IDENTITY="" \
-            ARCHS=arm64 > build_log.txt 2>&1 || exit 1
+            ARCHS=arm64 >> build_log.txt 2>&1 || exit 1
 
       # ── 5. Locate the built .app ──────────────────────────────────────
       - name: Locate .app
@@ -95,4 +94,4 @@ jobs:
           git config user.email "github-actions@github.com"
           git add build_log.txt || true
           git commit -m "Upload build log [skip ci]" || true
-          git push || true
+          git push origin HEAD:main || true
