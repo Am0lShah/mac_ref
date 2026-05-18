@@ -16,9 +16,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # ── 2. Check xcodegen ─────────────────────────────────────────────
-      - name: Check xcodegen
-        run: xcodegen --version
+      # ── 2. Install xcodegen ─────────────────────────────────────────────
+      - name: Install xcodegen
+        run: brew install xcodegen
 
       # ── 3. Generate Xcode project ─────────────────────────────────────
       - name: Generate Xcode project
@@ -30,6 +30,7 @@ jobs:
       - name: Build
         run: |
           xcodebuild clean build \
+            -project MacRef.xcodeproj \
             -scheme MacRef \
             -configuration Release \
             -destination 'platform=macOS,arch=arm64' \
@@ -37,7 +38,7 @@ jobs:
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGN_IDENTITY="" \
-            ARCHS=arm64 || (echo "XCODEBUILD FAILED" && exit 1)
+            ARCHS=arm64 > build_log.txt 2>&1 || (cat build_log.txt && exit 1)
 
       # ── 5. Locate the built .app ──────────────────────────────────────
       - name: Locate .app
@@ -71,3 +72,14 @@ jobs:
           name: MacRef-DMG
           path: MacRef.dmg
           retention-days: 30
+
+      # ── 8. Upload Logs on Failure ─────────────────────────────────────
+      - name: Upload Build Logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: MacRef-Build-Logs
+          path: |
+            build_log.txt
+            MacRef.xcodeproj
+          retention-days: 5
