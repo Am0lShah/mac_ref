@@ -1,0 +1,17 @@
+⚙️  Generating plists...
+⚙️  Generating project...
+⚙️  Writing project...
+Created project at /Users/runner/work/mac_ref/mac_ref/MacRef.xcodeproj
+Command line invocation:
+    /Applications/Xcode_15.4.app/Contents/Developer/usr/bin/xcodebuild -list
+
+User defaults from command line:
+    IDEPackageSupportUseBuiltinSCM = YES
+
+2026-05-18 12:54:36.429 xcodebuild[5365:18968] Writing error result bundle to /var/folders/k4/_09nqs851t35bpkk8lr_p43c0000gn/T/ResultBundle_2026-18-05_12-54-0036.xcresult
+xcodebuild: error: Unable to read project 'MacRef.xcodeproj'.
+	Reason: The project ‘MacRef’ cannot be opened because it is in a future Xcode project file format (77). Adjust the project format using a compatible version of Xcode to allow it to be opened by this version of Xcode.
+
+
+2026-05-18 12:54:38.674 xcodebuild[5684:20158] Writing error result bundle to /var/folders/k4/_09nqs851t35bpkk8lr_p43c0000gn/T/ResultBundle_2026-18-05_12-54-0038.xcresult
+xcodebuild: error: The flag -scheme, -testProductsPath, or -xctestrun is required when specifying -derivedDataPath.
