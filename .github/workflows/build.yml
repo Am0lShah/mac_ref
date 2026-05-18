@@ -1,0 +1,70 @@
+name: Build MacRef DMG
+
+# Triggers: every push to main, or manually from the Actions tab
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build & Package MacRef
+    runs-on: macos-14        # Apple Silicon runner (M1) — free on GitHub
+
+    steps:
+      # ── 1. Checkout source ────────────────────────────────────────────
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # ── 2. Install xcodegen (generates .xcodeproj from project.yml) ───
+      - name: Install xcodegen
+        run: brew install xcodegen
+
+      # ── 3. Generate Xcode project ─────────────────────────────────────
+      - name: Generate Xcode project
+        run: xcodegen generate --spec project.yml
+
+      # ── 4. Build Release binary (no code signing) ─────────────────────
+      - name: Build
+        run: |
+          xcodebuild clean build \
+            -scheme MacRef \
+            -configuration Release \
+            -derivedDataPath ./DerivedData \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            ARCHS=arm64
+
+      # ── 5. Locate the built .app ──────────────────────────────────────
+      - name: Locate .app
+        id: find_app
+        run: |
+          APP=$(find ./DerivedData -name "MacRef.app" -type d | head -1)
+          echo "APP_PATH=$APP" >> $GITHUB_OUTPUT
+          echo "Found app at: $APP"
+
+      # ── 6. Package as DMG ─────────────────────────────────────────────
+      - name: Create DMG
+        run: |
+          mkdir -p ./dmg_staging
+          cp -R "${{ steps.find_app.outputs.APP_PATH }}" ./dmg_staging/MacRef.app
+          ln -sf /Applications ./dmg_staging/Applications
+
+          hdiutil create \
+            -volname "MacRef" \
+            -srcfolder ./dmg_staging \
+            -ov \
+            -format UDZO \
+            MacRef.dmg
+
+          echo "✅ DMG created: MacRef.dmg"
+          ls -lh MacRef.dmg
+
+      # ── 7. Upload DMG as a downloadable artifact ──────────────────────
+      - name: Upload DMG
+        uses: actions/upload-artifact@v4
+        with:
+          name: MacRef-DMG
+          path: MacRef.dmg
+          retention-days: 30

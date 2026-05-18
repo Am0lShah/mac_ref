@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- ── Identity ─────────────────────────────────── -->
+	<key>CFBundleName</key>
+	<string>MacRef</string>
+	<key>CFBundleDisplayName</key>
+	<string>MacRef</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.yourname.MacRef</string>
+	<key>CFBundleVersion</key>
+	<string>1</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0.0</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+
+	<!-- ── Minimum OS ───────────────────────────────── -->
+	<key>LSMinimumSystemVersion</key>
+	<string>14.0</string>
+
+	<!-- ── Principal class ──────────────────────────── -->
+	<key>NSPrincipalClass</key>
+	<string>NSApplication</string>
+
+	<!-- ── Appearance: force dark ───────────────────── -->
+	<key>UIUserInterfaceStyle</key>
+	<string>Dark</string>
+	<key>NSRequiresAquaSystemAppearance</key>
+	<false/>
+
+	<!-- ── Document types accepted (image files) ─────── -->
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeName</key>
+			<string>Image</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>public.image</string>
+			</array>
+		</dict>
+	</array>
+
+	<!-- ── Sandbox: off (required for file drag-drop) ── -->
+	<key>com.apple.security.app-sandbox</key>
+	<false/>
+
+	<!-- ── Allow reading arbitrary files from Finder ─── -->
+	<key>com.apple.security.files.user-selected.read-only</key>
+	<true/>
+</dict>
+</plist>
