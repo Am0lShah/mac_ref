@@ -39,7 +39,9 @@ cat > /tmp/MacRef_ExportOptions.plist <<'PLIST'
     <key>method</key>
     <string>mac-application</string>
     <key>signingStyle</key>
-    <string>automatic</string>
+    <string>manual</string>
+    <key>signingCertificate</key>
+    <string>-</string>
 </dict>
 </plist>
 PLIST
@@ -60,6 +62,8 @@ cp -R "$APP_PATH" "$STAGING/"
 # Symlink to /Applications so users can drag-install
 ln -sf /Applications "$STAGING/Applications"
 
+codesign --force --deep --sign - "$STAGING/MacRef.app"
+
 hdiutil create \
   -volname  "$VOLUME_NAME" \
   -srcfolder "$STAGING" \
@@ -67,5 +71,10 @@ hdiutil create \
   -format   UDZO \
   "$DMG_NAME"
 
+echo "▶ Creating PKG..."
+pkgbuild --install-location /Applications \
+  --component "$STAGING/MacRef.app" \
+  "MacRef.pkg"
+
 echo ""
-echo "✅  Done!  →  $DMG_NAME"
+echo "✅  Done!  →  $DMG_NAME, MacRef.pkg"

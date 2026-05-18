@@ -46,8 +46,9 @@ jobs:
             -configuration Release \
             -destination 'platform=macOS,arch=arm64' \
             -derivedDataPath ./DerivedData \
-            CODE_SIGNING_ALLOWED=NO \
-            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="-" \
+            CODE_SIGNING_ALLOWED=YES \
+            CODE_SIGNING_REQUIRED=YES \
             ARCHS=arm64 >> build_log.txt 2>&1 || (cat build_log.txt && exit 1)
 
       - name: Show Build Log on Failure
@@ -69,6 +70,9 @@ jobs:
           cp -R "${{ steps.find_app.outputs.APP_PATH }}" ./dmg_staging/MacRef.app
           ln -sf /Applications ./dmg_staging/Applications
 
+          # Ad-hoc sign the app bundle explicitly to ensure valid structure
+          codesign --force --deep --sign - ./dmg_staging/MacRef.app
+
           hdiutil create \
             -volname "MacRef" \
             -srcfolder ./dmg_staging \
@@ -76,15 +80,23 @@ jobs:
             -format UDZO \
             MacRef.dmg
 
+          # Create a PKG installer (avoids quarantine flag on installation)
+          pkgbuild --install-location /Applications \
+            --component ./dmg_staging/MacRef.app \
+            MacRef.pkg
+
           echo "✅ DMG created: MacRef.dmg"
+          echo "✅ PKG created: MacRef.pkg"
           ls -lh MacRef.dmg
 
       # ── 7. Upload DMG as a downloadable artifact ──────────────────────
-      - name: Upload DMG
+      - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: MacRef-DMG
-          path: MacRef.dmg
+          name: MacRef-Artifacts
+          path: |
+            MacRef.dmg
+            MacRef.pkg
           retention-days: 30
 
       # ── 8. Upload Logs on Failure ─────────────────────────────────────
